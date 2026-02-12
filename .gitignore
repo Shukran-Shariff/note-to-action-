@@ -1,0 +1,50 @@
+# =========================
+# IntelliJ IDEA
+# =========================
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# =========================
+# Gradle
+# =========================
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# =========================
+# OS generated files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Environment / local config
+# =========================
+.env
+.env.*
+local.properties
+
+# =========================
+# Generated JSON output (app data)
+# =========================
+tasks.json
+
+# =========================
+# Kotlin
+# =========================
+*.kotlin_module
+
+# =========================
+# Temporary files
+# =========================
+*.swp
+*.swo
+*~
