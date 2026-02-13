@@ -4,11 +4,27 @@
     application
 }
 
+kotlin{
+    jvmToolchain(21)
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation("io.ktor:ktor-server-core-jvm:2.3.12")
+    implementation("io.ktor:ktor-server-netty-jvm:2.3.12")
+    implementation("io.ktor:ktor-server-html-builder-jvm:2.3.12")
+    implementation("io.ktor:ktor-server-call-logging-jvm:2.3.12")
+    testImplementation("io.ktor:ktor-server-test-host-jvm:2.3.12")
+
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
@@ -26,4 +42,5 @@ application {
     // Kotlin top-level main function in app/Main.kt
     mainClass.set("app.MainKt")
 }
+
 
