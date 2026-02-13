@@ -14,6 +14,16 @@ class TaskStore(private val filePath: Path) {
         Files.writeString(filePath, content)
     }
 
+    fun appendTask(task: String) {
+        val tasks = loadTasks().toMutableList()
+        tasks.add(task)
+        saveTasks(tasks)
+    }
+
+    fun clearTasks() {
+        saveTasks(emptyList())
+    }
+
     fun loadTasks(): List<String> {
         if (!Files.exists(filePath)) {
             return emptyList()
