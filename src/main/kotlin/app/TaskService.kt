@@ -15,6 +15,12 @@ class TaskService(
         return taskStore.markTaskDone(index)
     }
 
+    fun toggleTaskDone(taskNumber: Int): Boolean {
+        val index = taskNumber - 1
+        if (index < 0) return false
+        return taskStore.toggleTaskDone(index)
+    }
+
     fun removeTask(taskNumber: Int): Boolean {
         val index = taskNumber - 1
         if (index < 0) return false

@@ -37,4 +37,17 @@ class TaskStoreTest {
 
         assertEquals(listOf(Task("Legacy one", false), Task("Legacy two", false)), loadedTasks)
     }
+
+    @Test
+    fun `toggleTaskDone flips done flag`(@TempDir tempDir: Path) {
+        val filePath = tempDir.resolve("tasks.json")
+        val store = TaskStore(filePath)
+        store.saveTasks(listOf(Task("Task one", false)))
+
+        assertTrue(store.toggleTaskDone(0))
+        assertEquals(listOf(Task("Task one", true)), store.loadTasks())
+
+        assertTrue(store.toggleTaskDone(0))
+        assertEquals(listOf(Task("Task one", false)), store.loadTasks())
+    }
 }

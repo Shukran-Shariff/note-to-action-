@@ -40,6 +40,18 @@ class TaskStore(private val filePath: Path) {
         return true
     }
 
+    fun toggleTaskDone(index: Int): Boolean {
+        val tasks = loadTasks().toMutableList()
+        if (index !in tasks.indices) {
+            return false
+        }
+
+        val task = tasks[index]
+        tasks[index] = task.copy(done = !task.done)
+        saveTasks(tasks)
+        return true
+    }
+
     fun removeTask(index: Int): Boolean {
         val tasks = loadTasks().toMutableList()
         if (index !in tasks.indices) {

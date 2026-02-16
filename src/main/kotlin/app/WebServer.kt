@@ -30,42 +30,59 @@ fun main() {
         routing {
             get("/") {
                 val message = call.request.queryParameters["msg"]
+                val filter = parseFilter(call.request.queryParameters["filter"])
                 call.respondText(
-                    text = HtmlPages.homePage(taskService.listTasks(), message),
+                    text = HtmlPages.homePage(taskService.listTasks(), message, filter),
                     contentType = ContentType.Text.Html
                 )
             }
 
+            post("/add") {
+                val filter = parseFilter(call.request.queryParameters["filter"])
+                val task = call.receiveParameters()["task"].orEmpty().trim()
+                val message = if (task.isEmpty()) {
+                    "Task cannot be empty"
+                } else {
+                    taskService.addTask(task)
+                    "Task added"
+                }
+                call.respondRedirect(redirectHome(message, filter))
+            }
+
             post("/import") {
+                val filter = parseFilter(call.request.queryParameters["filter"])
                 val notes = call.receiveParameters()["notes"].orEmpty()
                 val lines = notes.lines()
                 taskService.processRawLines(lines)
-                call.respondRedirect("/?msg=${encodeMessage("Tasks imported")}")
+                call.respondRedirect(redirectHome("Tasks imported", filter))
             }
 
-            post("/done") {
+            post("/toggleDone") {
+                val filter = parseFilter(call.request.queryParameters["filter"])
                 val id = call.request.queryParameters["id"]?.toIntOrNull()
-                val message = if (id != null && taskService.markTaskDone(id)) {
-                    "Task marked done"
+                val message = if (id != null && taskService.toggleTaskDone(id)) {
+                    "Task updated"
                 } else {
                     "Task not found"
                 }
-                call.respondRedirect("/?msg=${encodeMessage(message)}")
+                call.respondRedirect(redirectHome(message, filter))
             }
 
             post("/remove") {
+                val filter = parseFilter(call.request.queryParameters["filter"])
                 val id = call.request.queryParameters["id"]?.toIntOrNull()
                 val message = if (id != null && taskService.removeTask(id)) {
                     "Task removed"
                 } else {
                     "Task not found"
                 }
-                call.respondRedirect("/?msg=${encodeMessage(message)}")
+                call.respondRedirect(redirectHome(message, filter))
             }
 
             post("/clear") {
+                val filter = parseFilter(call.request.queryParameters["filter"])
                 taskService.clearTasks()
-                call.respondRedirect("/?msg=${encodeMessage("All tasks cleared")}")
+                call.respondRedirect(redirectHome("All tasks cleared", filter))
             }
         }
     }.start(wait = true)
@@ -73,3 +90,19 @@ fun main() {
 
 private fun encodeMessage(message: String): String =
     URLEncoder.encode(message, StandardCharsets.UTF_8)
+
+private fun parseFilter(value: String?): String {
+    return when (value?.lowercase()) {
+        "open", "done" -> value.lowercase()
+        else -> "all"
+    }
+}
+
+private fun redirectHome(message: String, filter: String): String {
+    val encodedMessage = encodeMessage(message)
+    return if (filter == "all") {
+        "/?msg=$encodedMessage"
+    } else {
+        "/?msg=$encodedMessage&filter=$filter"
+    }
+}

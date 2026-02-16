@@ -1,6 +1,8 @@
 package app
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.io.TempDir
 import java.nio.file.Path
@@ -64,5 +66,16 @@ class TaskServiceTest {
             ),
             store.loadTasks()
         )
+    }
+
+    @Test
+    fun `toggleTaskDone uses one based task number`(@TempDir tempDir: Path) {
+        val store = TaskStore(tempDir.resolve("tasks.json"))
+        store.saveTasks(listOf(Task("Task one", false)))
+        val service = TaskService(store)
+
+        assertTrue(service.toggleTaskDone(1))
+        assertEquals(listOf(Task("Task one", true)), store.loadTasks())
+        assertFalse(service.toggleTaskDone(2))
     }
 }
