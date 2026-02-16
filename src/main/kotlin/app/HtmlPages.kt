@@ -1,7 +1,7 @@
 package app
 
 object HtmlPages {
-    fun homePage(tasks: List<Task>): String {
+    fun homePage(tasks: List<Task>, message: String? = null): String {
         val taskItems = buildString {
             tasks.forEachIndexed { index, task ->
                 val number = index + 1
@@ -31,6 +31,10 @@ object HtmlPages {
         } else {
             "<ol>$taskItems</ol>"
         }
+        val messageBanner = message
+            ?.takeIf { it.isNotBlank() }
+            ?.let { "<div>${escapeHtml(it)}</div>" }
+            .orEmpty()
 
         return """
             <!DOCTYPE html>
@@ -41,6 +45,7 @@ object HtmlPages {
                 <title>Note To Action</title>
             </head>
             <body>
+                $messageBanner
                 <h1>Note To Action</h1>
                 <form method="post" action="/import">
                     <label for="notes">Notes</label><br>
