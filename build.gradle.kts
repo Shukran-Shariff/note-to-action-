@@ -18,12 +18,14 @@ repositories {
     mavenCentral()
 }
 
+val ktorVersion = "2.3.12"
+
 dependencies {
-    implementation("io.ktor:ktor-server-core-jvm:2.3.12")
-    implementation("io.ktor:ktor-server-netty-jvm:2.3.12")
-    implementation("io.ktor:ktor-server-html-builder-jvm:2.3.12")
-    implementation("io.ktor:ktor-server-call-logging-jvm:2.3.12")
-    testImplementation("io.ktor:ktor-server-test-host-jvm:2.3.12")
+    implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-html-builder-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-call-logging-jvm:$ktorVersion")
+    testImplementation("io.ktor:ktor-server-test-host-jvm:$ktorVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
 
@@ -38,9 +40,15 @@ tasks.test {
     useJUnitPlatform()
 }
 
+tasks.register<JavaExec>("runWeb") {
+    group = "application"
+    description = "Runs the Ktor web server on http://localhost:8080"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("app.WebServerKt")
+}
+
 application {
     // Kotlin top-level main function in app/Main.kt
     mainClass.set("app.MainKt")
 }
-
 

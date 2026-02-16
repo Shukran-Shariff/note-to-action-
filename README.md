@@ -32,7 +32,7 @@ A simple Kotlin console app that extracts tasks from notes.
 ---
 
 ## ▶ How to Run (Terminal)
-
+``
 From project root:
 
 ### Run tests
